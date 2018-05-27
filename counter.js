@@ -4,6 +4,7 @@
  */
 
 function h(name, attributes) {
+  console.log('entering h...', arguments, arguments.length);
   var rest = [];
   var children = [];
   var length = arguments.length;
@@ -11,6 +12,8 @@ function h(name, attributes) {
   while (length-- > 2) {
     rest.push(arguments[length]);
   }
+
+  console.log('rest:', rest);
 
   while (rest.length) {
     var node = rest.pop();
@@ -22,6 +25,8 @@ function h(name, attributes) {
       children.push(node);
     }
   }
+
+  console.log('children', children);
 
   return typeof name === 'function'
     ? name(attributes || {}, children)
@@ -118,7 +123,9 @@ function app(state, actions, view, container) {
   }
 
   function wireStateToActions(path, state, actions) {
+    console.log('entering wireStateToActions...', path, state, actions);
     for (var key in actions) {
+      console.log('processing key:', key, actions[key]);
       typeof actions[key] === 'function'
         ? (function(key, action) {
             actions[key] = function(data) {
@@ -145,7 +152,11 @@ function app(state, actions, view, container) {
               return result;
             };
           })(key, actions[key])
-        : wireStateToActions(
+        : console.log(
+            '    recursive calling wireStateToActions...',
+            path.concat(key),
+          ) ||
+          wireStateToActions(
             path.concat(key),
             (state[key] = clone(state[key])),
             (actions[key] = clone(actions[key])),
@@ -449,6 +460,7 @@ const EmojiList = emojis => {
 };
 
 const view = (state, actions) =>
+  console.log('view...', state, actions) ||
   h('div', { className: 'container', oncreate: () => actions.getEmojiList() }, [
     h('h1', {}, 'Emoji Search'),
     h('input', {
@@ -458,3 +470,15 @@ const view = (state, actions) =>
     }),
     EmojiList(state.filteredEmoji),
   ]);
+
+const viewJsx = (state, actions) => (
+  <div className="container" onCreate={() => actions.getEmojiList()}>
+    <h1>Emoji Search</h1>
+    <input
+      type="search"
+      placeholder="Search..."
+      onInput={e => actions.search(e.target.value)}
+    />
+    <EmojiList emojis={state.filteredEmoji} />
+  </div>
+);
