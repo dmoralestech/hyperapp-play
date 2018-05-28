@@ -471,14 +471,14 @@ const view = (state, actions) =>
     EmojiList(state.filteredEmoji),
   ]);
 
-const viewJsx = (state, actions) => (
-  <div className="container" onCreate={() => actions.getEmojiList()}>
-    <h1>Emoji Search</h1>
-    <input
-      type="search"
-      placeholder="Search..."
-      onInput={e => actions.search(e.target.value)}
-    />
-    <EmojiList emojis={state.filteredEmoji} />
-  </div>
-);
+// const viewJsx = (state, actions) => (
+//   <div className="container" onCreate={() => actions.getEmojiList()}>
+//     <h1>Emoji Search</h1>
+//     <input
+//       type="search"
+//       placeholder="Search..."
+//       onInput={e => actions.search(e.target.value)}
+//     />
+//     <EmojiList emojis={state.filteredEmoji} />
+//   </div>
+// );
